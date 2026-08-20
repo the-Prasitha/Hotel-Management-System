@@ -41,31 +41,46 @@ function HotelCard({ hotel, onDeleted }) {
     }
   };
 
+  const handleEdit = () => {
+    navigate(`/hotels/${hotel.id}/edit`);
+  };
+
+  const handleDetails = () => {
+    navigate(`/hotels/${hotel.id}`);
+  };
+
   return (
     <div className="hotel-card">
+      {/* Hotel Image */}
       <img
         src={imageUrl}
         alt={hotel.title}
         className="hotel-card-image"
+        onClick={handleDetails}
       />
 
       <div className="hotel-card-content">
-        <h2>{hotel.title}</h2>
+        {/* Hotel Title */}
+        <h2
+          className="hotel-card-title"
+          onClick={handleDetails}
+        >
+          {hotel.title}
+        </h2>
 
+        {/* Description */}
         <p className="hotel-description">
           {hotel.description}
         </p>
 
+        {/* Price */}
         <p className="hotel-price">
           ₹{hotel.price}
         </p>
 
+        {/* Actions */}
         <div className="hotel-card-actions">
-          <button
-            onClick={() =>
-              navigate(`/hotels/${hotel.id}/edit`)
-            }
-          >
+          <button onClick={handleEdit}>
             Edit
           </button>
 

@@ -172,3 +172,73 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+.hotel-card-image {
+  cursor: pointer;
+}
+
+.hotel-card-title {
+  cursor: pointer;
+}
+
+.hotel-card-title:hover {
+  text-decoration: underline;
+}
+
+.hotel-details-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.back-button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.hotel-details-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+}
+
+.hotel-details-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.hotel-details-content {
+  padding: 30px;
+}
+
+.hotel-details-content h1 {
+  margin-bottom: 15px;
+}
+
+.hotel-details-description {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.hotel-coordinates {
+  margin-top: 20px;
+  line-height: 1.8;
+}
+
+.hotel-map-section {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.hotel-map-section h2 {
+  margin-bottom: 20px;
+}
