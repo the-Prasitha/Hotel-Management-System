@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 import { fetchHotels } from "../redux/hotelSlice";
 import HotelCard from "../components/HotelCard";
 
@@ -18,12 +19,24 @@ function HotelList() {
     dispatch(fetchHotels());
   }, [dispatch]);
 
+  const handleDeleted = () => {
+    dispatch(fetchHotels());
+  };
+
   if (loading) {
-    return <h2>Loading hotels...</h2>;
+    return (
+      <div className="hotel-page">
+        <h2>Loading hotels...</h2>
+      </div>
+    );
   }
 
   if (error) {
-    return <h2>{error}</h2>;
+    return (
+      <div className="hotel-page">
+        <h2>{error}</h2>
+      </div>
+    );
   }
 
   return (
@@ -32,11 +45,11 @@ function HotelList() {
         <h1>Hotel Management System</h1>
 
         <button
-  className="add-hotel-button"
-  onClick={() => navigate("/hotels/add")}
->
-  + Add Hotel
-</button>
+          className="add-hotel-button"
+          onClick={() => navigate("/hotels/add")}
+        >
+          + Add Hotel
+        </button>
       </header>
 
       <div className="hotel-list">
@@ -47,6 +60,7 @@ function HotelList() {
             <HotelCard
               key={hotel.id}
               hotel={hotel}
+              onDeleted={handleDeleted}
             />
           ))
         )}

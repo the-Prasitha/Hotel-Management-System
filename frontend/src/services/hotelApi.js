@@ -39,3 +39,9 @@ export const getHotelById = async (id) => {
 
   return response.data;
 };
+
+export const deleteHotel = async (id) => {
+  const response = await axios.delete(`${API_URL}/${id}`);
+
+  return response.data;
+};
