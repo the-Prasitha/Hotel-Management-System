@@ -392,10 +392,36 @@ const deleteHotel = async (req, res) => {
     });
   }
 };
+const getHotelById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      "SELECT * FROM hotels WHERE id = $1",
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Hotel not found",
+      });
+    }
+
+    res.json(result.rows[0]);
+
+  } catch (error) {
+    console.error("Get hotel error:", error);
+
+    res.status(500).json({
+      message: "Failed to fetch hotel",
+    });
+  }
+};
 
 module.exports = {
   createHotel,
   getHotels,
+  getHotelById,
   updateHotel,
   deleteHotel,
 };

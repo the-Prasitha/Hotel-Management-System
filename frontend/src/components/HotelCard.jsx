@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function HotelCard({ hotel }) {
+  const navigate = useNavigate();
+
   const imageUrl = `http://localhost:5000${hotel.image}`;
 
   return (
@@ -21,8 +25,17 @@ function HotelCard({ hotel }) {
         </p>
 
         <div className="hotel-card-actions">
-          <button>Edit</button>
-          <button>Delete</button>
+          <button
+            onClick={() =>
+              navigate(`/hotels/${hotel.id}/edit`)
+            }
+          >
+            Edit
+          </button>
+
+          <button>
+            Delete
+          </button>
         </div>
       </div>
     </div>
