@@ -98,104 +98,59 @@ const getHotels = async (req, res) => {
     const conditions = [];
     const values = [];
 
-    let parameterIndex = 1;
-
-    // Title search
-    if (title) {
-      conditions.push(`title ILIKE $${parameterIndex}`);
-      values.push(`%${title}%`);
-      parameterIndex++;
+    // Search by title
+    if (title && title.trim() !== "") {
+      values.push(`%${title.trim()}%`);
+      conditions.push(`title ILIKE $${values.length}`);
     }
 
     // Minimum price
-    if (minPrice !== undefined) {
-      const min = Number(minPrice);
-
-      if (!Number.isFinite(min) || min < 0) {
-        return res.status(400).json({
-          message: "Invalid minimum price",
-        });
-      }
-
-      conditions.push(`price >= $${parameterIndex}`);
-      values.push(min);
-      parameterIndex++;
+    if (minPrice !== undefined && minPrice !== "") {
+      values.push(Number(minPrice));
+      conditions.push(`price >= $${values.length}`);
     }
 
     // Maximum price
-    if (maxPrice !== undefined) {
-      const max = Number(maxPrice);
-
-      if (!Number.isFinite(max) || max < 0) {
-        return res.status(400).json({
-          message: "Invalid maximum price",
-        });
-      }
-
-      conditions.push(`price <= $${parameterIndex}`);
-      values.push(max);
-      parameterIndex++;
+    if (maxPrice !== undefined && maxPrice !== "") {
+      values.push(Number(maxPrice));
+      conditions.push(`price <= $${values.length}`);
     }
 
-    const parsedOffset = Number(offset);
-    const parsedLimit = Number(limit);
-
-    if (!Number.isInteger(parsedOffset) || parsedOffset < 0) {
-      return res.status(400).json({
-        message: "Invalid offset",
-      });
-    }
-
-    if (!Number.isInteger(parsedLimit) || parsedLimit <= 0) {
-      return res.status(400).json({
-        message: "Invalid limit",
-      });
-    }
-
-    // Build WHERE clause
     const whereClause =
       conditions.length > 0
         ? `WHERE ${conditions.join(" AND ")}`
         : "";
 
-    // Get hotels
-    const hotelsQuery = `
-      SELECT *
-      FROM hotels
-      ${whereClause}
-      ORDER BY created_at DESC
-      LIMIT $${parameterIndex}
-      OFFSET $${parameterIndex + 1}
-    `;
-
-    const hotelValues = [
-      ...values,
-      parsedLimit,
-      parsedOffset,
-    ];
-
-    const hotelsResult = await pool.query(
-      hotelsQuery,
-      hotelValues
-    );
-
-    // Get total matching hotels
-    const countQuery = `
-      SELECT COUNT(*) AS total
-      FROM hotels
-      ${whereClause}
-    `;
-
+    // Get total count
     const countResult = await pool.query(
-      countQuery,
+      `SELECT COUNT(*) FROM hotels ${whereClause}`,
       values
     );
 
-    const total = Number(countResult.rows[0].total);
+    const total = Number(countResult.rows[0].count);
+
+    // Pagination values
+    const parsedOffset = Math.max(Number(offset) || 0, 0);
+    const parsedLimit = Math.min(
+      Math.max(Number(limit) || 10, 1),
+      100
+    );
+
+    // Get hotels
+    const hotelsResult = await pool.query(
+      `
+      SELECT *
+      FROM hotels
+      ${whereClause}
+      ORDER BY id DESC
+      LIMIT $${values.length + 1}
+      OFFSET $${values.length + 2}
+      `,
+      [...values, parsedLimit, parsedOffset]
+    );
 
     res.json({
       hotels: hotelsResult.rows,
-
       pagination: {
         offset: parsedOffset,
         limit: parsedLimit,
