@@ -4,10 +4,13 @@ require("dotenv").config();
 
 const pool = require("./db/db");
 
+const hotelRoutes = require("./routes/hotelRoutes");
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 app.get("/", (req, res) => {
   res.json({
@@ -31,6 +34,8 @@ app.get("/api/test-db", async (req, res) => {
     });
   }
 });
+
+app.use("/api/hotels", hotelRoutes);
 
 const PORT = process.env.PORT || 5000;
 
