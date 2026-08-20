@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import { useNavigate } from "react-router-dom";
 import { fetchHotels } from "../redux/hotelSlice";
 import HotelCard from "../components/HotelCard";
 
 function HotelList() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     hotels,
@@ -30,9 +31,12 @@ function HotelList() {
       <header className="hotel-header">
         <h1>Hotel Management System</h1>
 
-        <button className="add-hotel-button">
-          + Add Hotel
-        </button>
+        <button
+  className="add-hotel-button"
+  onClick={() => navigate("/hotels/add")}
+>
+  + Add Hotel
+</button>
       </header>
 
       <div className="hotel-list">
