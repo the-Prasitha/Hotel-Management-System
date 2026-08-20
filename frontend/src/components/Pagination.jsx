@@ -4,9 +4,11 @@ function Pagination({
   total,
   onPageChange,
 }) {
-  const currentPage = Math.floor(offset / limit) + 1;
+  const currentPage =
+    Math.floor(offset / limit) + 1;
 
-  const totalPages = Math.ceil(total / limit);
+  const totalPages =
+    Math.ceil(total / limit);
 
   if (totalPages <= 1) {
     return null;
@@ -22,7 +24,9 @@ function Pagination({
     <div className="pagination">
       <button
         disabled={currentPage === 1}
-        onClick={() => goToPage(currentPage - 1)}
+        onClick={() =>
+          goToPage(currentPage - 1)
+        }
       >
         Previous
       </button>
@@ -46,7 +50,9 @@ function Pagination({
 
       <button
         disabled={currentPage === totalPages}
-        onClick={() => goToPage(currentPage + 1)}
+        onClick={() =>
+          goToPage(currentPage + 1)
+        }
       >
         Next
       </button>

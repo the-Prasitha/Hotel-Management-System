@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { fetchHotels } from "../redux/hotelSlice";
-
 import HotelCard from "../components/HotelCard";
 import SearchFilter from "../components/SearchFilter";
 import Pagination from "../components/Pagination";
@@ -29,36 +28,54 @@ function HotelList() {
     maxPrice: "",
   });
 
-  // Fetch hotels
+  // Current page offset
+  const [offset, setOffset] = useState(0);
+
+  // 4 hotels per page
+  const limit = 4;
+
+  // --------------------------------
+  // FETCH HOTELS
+  // --------------------------------
+
   useEffect(() => {
     dispatch(
       fetchHotels({
         ...filters,
-        offset: pagination.offset,
-        limit: pagination.limit,
+        offset,
+        limit,
       })
     );
-  }, [
-    dispatch,
-    filters,
-    pagination.offset,
-    pagination.limit,
-  ]);
+  }, [dispatch, filters, offset]);
 
-  // Search
+  // --------------------------------
+  // SEARCH
+  // --------------------------------
+
   const handleSearch = () => {
-    setFilters({
-      title,
+    const newFilters = {
+      title: title.trim(),
       minPrice,
       maxPrice,
-    });
+    };
+
+    // IMPORTANT:
+    // Search always starts from page 1
+    setOffset(0);
+
+    setFilters(newFilters);
   };
 
-  // Clear filters
+  // --------------------------------
+  // CLEAR
+  // --------------------------------
+
   const handleClear = () => {
     setTitle("");
     setMinPrice("");
     setMaxPrice("");
+
+    setOffset(0);
 
     setFilters({
       title: "",
@@ -67,24 +84,24 @@ function HotelList() {
     });
   };
 
-  // Pagination
+  // --------------------------------
+  // PAGINATION
+  // --------------------------------
+
   const handlePageChange = (newOffset) => {
-    dispatch(
-      fetchHotels({
-        ...filters,
-        offset: newOffset,
-        limit: pagination.limit,
-      })
-    );
+    setOffset(newOffset);
   };
 
-  // After delete
+  // --------------------------------
+  // DELETE
+  // --------------------------------
+
   const handleDeleted = () => {
     dispatch(
       fetchHotels({
         ...filters,
-        offset: pagination.offset,
-        limit: pagination.limit,
+        offset,
+        limit,
       })
     );
   };
@@ -104,7 +121,7 @@ function HotelList() {
         </button>
       </header>
 
-      {/* Search & Filters */}
+      {/* Search / Filter */}
       <SearchFilter
         title={title}
         minPrice={minPrice}
@@ -130,29 +147,29 @@ function HotelList() {
         </p>
       )}
 
-      {/* Hotel List */}
+      {/* Hotels */}
       {!loading && !error && (
         <>
-          <div className="hotel-list">
-            {hotels.length === 0 ? (
-              <p className="status-message">
-                No hotels found.
-              </p>
-            ) : (
-              hotels.map((hotel) => (
+          {hotels.length === 0 ? (
+            <p className="status-message">
+              No hotels found.
+            </p>
+          ) : (
+            <div className="hotel-list">
+              {hotels.map((hotel) => (
                 <HotelCard
                   key={hotel.id}
                   hotel={hotel}
                   onDeleted={handleDeleted}
                 />
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Pagination */}
           <Pagination
-            offset={pagination.offset}
-            limit={pagination.limit}
+            offset={offset}
+            limit={limit}
             total={pagination.total}
             onPageChange={handlePageChange}
           />

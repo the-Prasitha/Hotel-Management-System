@@ -9,7 +9,8 @@ export const fetchHotels = createAsyncThunk(
       return data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch hotels"
+        error.response?.data?.message ||
+          "Failed to fetch hotels"
       );
     }
   }
@@ -20,12 +21,14 @@ const hotelSlice = createSlice({
 
   initialState: {
     hotels: [],
+
     pagination: {
       offset: 0,
-      limit: 10,
+      limit: 4,
       total: 0,
       count: 0,
     },
+
     loading: false,
     error: null,
   },
@@ -41,12 +44,15 @@ const hotelSlice = createSlice({
 
       .addCase(fetchHotels.fulfilled, (state, action) => {
         state.loading = false;
+
         state.hotels = action.payload.hotels;
+
         state.pagination = action.payload.pagination;
       })
 
       .addCase(fetchHotels.rejected, (state, action) => {
         state.loading = false;
+
         state.error = action.payload;
       });
   },
