@@ -483,3 +483,153 @@ button {
   }
 
 }
+
+/* ================================
+   Notifications
+================================ */
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+
+  min-width: 300px;
+  max-width: 420px;
+
+  padding: 15px 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  border-radius: 8px;
+
+  background: white;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
+  z-index: 9999;
+}
+
+.notification span {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.notification p {
+  flex: 1;
+  margin: 0;
+}
+
+.notification button {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.notification.success {
+  border-left: 4px solid #2e7d32;
+}
+
+.notification.error {
+  border-left: 4px solid #c62828;
+}
+
+@media (max-width: 600px) {
+  .notification {
+    left: 15px;
+    right: 15px;
+    min-width: auto;
+  }
+}
+
+/* ================================
+   Confirmation Modal
+================================ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 10000;
+}
+
+.confirm-modal {
+  width: 90%;
+  max-width: 420px;
+
+  background: white;
+  border-radius: 12px;
+
+  padding: 25px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+  animation: modalAppear 0.2s ease;
+}
+
+.confirm-modal h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
+}
+
+.confirm-modal p {
+  margin: 0 0 25px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.confirm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirm-modal-actions button {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.cancel-button {
+  background: #eee;
+  color: #222;
+}
+
+.cancel-button:hover {
+  background: #ddd;
+}
+
+.delete-confirm-button {
+  background: #c62828;
+  color: white;
+}
+
+.delete-confirm-button:hover {
+  background: #a51f1f;
+}
+
+.confirm-modal-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

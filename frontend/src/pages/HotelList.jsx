@@ -6,6 +6,7 @@ import { fetchHotels } from "../redux/hotelSlice";
 import HotelCard from "../components/HotelCard";
 import SearchFilter from "../components/SearchFilter";
 import Pagination from "../components/Pagination";
+import Notification from "../components/Notification";
 
 function HotelList() {
   const dispatch = useDispatch();
@@ -28,10 +29,14 @@ function HotelList() {
     maxPrice: "",
   });
 
-  // Current page offset
   const [offset, setOffset] = useState(0);
 
-  // 4 hotels per page
+  // Notification state
+  const [notification, setNotification] = useState({
+    message: "",
+    type: "success",
+  });
+
   const limit = 4;
 
   // --------------------------------
@@ -59,10 +64,7 @@ function HotelList() {
       maxPrice,
     };
 
-    // IMPORTANT:
-    // Search always starts from page 1
     setOffset(0);
-
     setFilters(newFilters);
   };
 
@@ -93,10 +95,10 @@ function HotelList() {
   };
 
   // --------------------------------
-  // DELETE
+  // DELETE SUCCESS
   // --------------------------------
 
-  const handleDeleted = () => {
+  const handleDeleted = (hotelTitle) => {
     dispatch(
       fetchHotels({
         ...filters,
@@ -104,10 +106,33 @@ function HotelList() {
         limit,
       })
     );
+
+    setNotification({
+      message: `${hotelTitle} deleted successfully!`,
+      type: "success",
+    });
+  };
+
+  // --------------------------------
+  // CLOSE NOTIFICATION
+  // --------------------------------
+
+  const closeNotification = () => {
+    setNotification({
+      message: "",
+      type: "success",
+    });
   };
 
   return (
     <div className="hotel-page">
+
+      {/* Notification */}
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        onClose={closeNotification}
+      />
 
       {/* Header */}
       <header className="hotel-header">
