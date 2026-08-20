@@ -213,7 +213,133 @@ const getHotels = async (req, res) => {
   }
 };
 
+//Update Hotel
+
+const updateHotel = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const {
+      title,
+      description,
+      latitude,
+      longitude,
+      price,
+    } = req.body;
+
+    // Check if hotel exists
+    const existingHotel = await pool.query(
+      "SELECT * FROM hotels WHERE id = $1",
+      [id]
+    );
+
+    if (existingHotel.rows.length === 0) {
+      return res.status(404).json({
+        message: "Hotel not found",
+      });
+    }
+
+    // Validation
+    if (
+      !title ||
+      !description ||
+      latitude === undefined ||
+      longitude === undefined ||
+      price === undefined
+    ) {
+      return res.status(400).json({
+        message: "All hotel fields are required",
+      });
+    }
+
+    const lat = Number(latitude);
+    const lng = Number(longitude);
+    const hotelPrice = Number(price);
+
+    if (!Number.isFinite(lat) || lat < -90 || lat > 90) {
+      return res.status(400).json({
+        message: "Latitude must be between -90 and 90",
+      });
+    }
+
+    if (!Number.isFinite(lng) || lng < -180 || lng > 180) {
+      return res.status(400).json({
+        message: "Longitude must be between -180 and 180",
+      });
+    }
+
+    if (!Number.isFinite(hotelPrice) || hotelPrice < 0) {
+      return res.status(400).json({
+        message: "Price must be a valid non-negative number",
+      });
+    }
+
+    const oldHotel = existingHotel.rows[0];
+
+    let imagePath = oldHotel.image;
+
+    // If a new image was uploaded
+    if (req.file) {
+      imagePath = `/uploads/${req.file.filename}`;
+    }
+
+    const query = `
+      UPDATE hotels
+      SET
+        image = $1,
+        title = $2,
+        description = $3,
+        latitude = $4,
+        longitude = $5,
+        price = $6
+      WHERE id = $7
+      RETURNING *
+    `;
+
+    const values = [
+      imagePath,
+      title.trim(),
+      description.trim(),
+      lat,
+      lng,
+      hotelPrice,
+      id,
+    ];
+
+    const result = await pool.query(query, values);
+
+    // Delete old image if a new image replaced it
+    if (req.file && oldHotel.image) {
+      const fs = require("fs");
+      const path = require("path");
+
+      const oldImagePath = path.join(
+        __dirname,
+        "..",
+        oldHotel.image.replace("/uploads/", "uploads/")
+      );
+
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+
+    res.json({
+      message: "Hotel updated successfully",
+      hotel: result.rows[0],
+    });
+
+  } catch (error) {
+    console.error("Update hotel error:", error);
+
+    res.status(500).json({
+      message: "Failed to update hotel",
+    });
+  }
+};
+
 module.exports = {
   createHotel,
   getHotels,
+  updateHotel,
 };
