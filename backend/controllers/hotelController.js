@@ -338,8 +338,64 @@ const updateHotel = async (req, res) => {
   }
 };
 
+//delete hotel
+
+const deleteHotel = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the hotel first
+    const existingHotel = await pool.query(
+      "SELECT * FROM hotels WHERE id = $1",
+      [id]
+    );
+
+    if (existingHotel.rows.length === 0) {
+      return res.status(404).json({
+        message: "Hotel not found",
+      });
+    }
+
+    const hotel = existingHotel.rows[0];
+
+    // Delete hotel from database
+    await pool.query(
+      "DELETE FROM hotels WHERE id = $1",
+      [id]
+    );
+
+    // Delete associated image
+    if (hotel.image) {
+      const fs = require("fs");
+      const path = require("path");
+
+      const imagePath = path.join(
+        __dirname,
+        "..",
+        hotel.image.replace("/uploads/", "uploads/")
+      );
+
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+
+    res.json({
+      message: "Hotel deleted successfully",
+    });
+
+  } catch (error) {
+    console.error("Delete hotel error:", error);
+
+    res.status(500).json({
+      message: "Failed to delete hotel",
+    });
+  }
+};
+
 module.exports = {
   createHotel,
   getHotels,
   updateHotel,
+  deleteHotel,
 };

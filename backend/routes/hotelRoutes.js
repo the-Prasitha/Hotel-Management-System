@@ -6,6 +6,7 @@ const {
   createHotel,
   getHotels,
   updateHotel,
+  deleteHotel,
 } = require("../controllers/hotelController");
 
 const upload = require("../middleware/uploadMiddleware");
@@ -18,5 +19,8 @@ router.get("/", getHotels);
 
 // UPDATE
 router.put("/:id", upload.single("image"), updateHotel);
+
+//DELETEe
+router.delete("/:id", deleteHotel);
 
 module.exports = router;
