@@ -12,9 +12,13 @@ function HotelDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch hotel details
   useEffect(() => {
     const fetchHotel = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const data = await getHotelById(id);
 
         setHotel(data);
@@ -33,6 +37,29 @@ function HotelDetails() {
     fetchHotel();
   }, [id]);
 
+  // Update browser tab title
+  useEffect(() => {
+    if (loading) {
+      document.title =
+        "Loading Hotel | Hotel Management System";
+    } else if (hotel) {
+      document.title =
+        `${hotel.title} | Hotel Management System`;
+    } else if (error) {
+      document.title =
+        "Error | Hotel Management System";
+    } else {
+      document.title =
+        "Hotel Not Found | Hotel Management System";
+    }
+
+    // Restore default title when leaving the page
+    return () => {
+      document.title = "Hotel Management System";
+    };
+  }, [loading, hotel, error]);
+
+  // Loading state
   if (loading) {
     return (
       <div className="hotel-details-page">
@@ -41,18 +68,34 @@ function HotelDetails() {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <div className="hotel-details-page">
         <h2>{error}</h2>
+
+        <button
+          className="back-button"
+          onClick={() => navigate("/")}
+        >
+          ← Back to Hotels
+        </button>
       </div>
     );
   }
 
+  // Hotel not found
   if (!hotel) {
     return (
       <div className="hotel-details-page">
         <h2>Hotel not found</h2>
+
+        <button
+          className="back-button"
+          onClick={() => navigate("/")}
+        >
+          ← Back to Hotels
+        </button>
       </div>
     );
   }
@@ -61,6 +104,8 @@ function HotelDetails() {
 
   return (
     <div className="hotel-details-page">
+
+      {/* Back Button */}
       <button
         className="back-button"
         onClick={() => navigate("/")}
@@ -68,7 +113,9 @@ function HotelDetails() {
         ← Back to Hotels
       </button>
 
+      {/* Hotel Details Card */}
       <div className="hotel-details-card">
+
         <img
           src={imageUrl}
           alt={hotel.title}
@@ -76,6 +123,7 @@ function HotelDetails() {
         />
 
         <div className="hotel-details-content">
+
           <h1>{hotel.title}</h1>
 
           <p className="hotel-details-description">
@@ -85,6 +133,7 @@ function HotelDetails() {
           <h2>₹{hotel.price}</h2>
 
           <div className="hotel-coordinates">
+
             <p>
               <strong>Latitude:</strong>{" "}
               {hotel.latitude}
@@ -94,11 +143,15 @@ function HotelDetails() {
               <strong>Longitude:</strong>{" "}
               {hotel.longitude}
             </p>
+
           </div>
+
         </div>
       </div>
 
+      {/* Hotel Map */}
       <div className="hotel-map-section">
+
         <h2>Hotel Location</h2>
 
         <HotelMap
@@ -106,7 +159,9 @@ function HotelDetails() {
           longitude={hotel.longitude}
           title={hotel.title}
         />
+
       </div>
+
     </div>
   );
 }
