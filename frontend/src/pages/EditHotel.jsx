@@ -40,7 +40,7 @@ function EditHotel() {
     try {
       const data = new FormData();
 
-      // Only append image if user selected a new one
+      // Only append image if a new image was selected
       if (formData.image) {
         data.append("image", formData.image);
       }
@@ -51,18 +51,31 @@ function EditHotel() {
       data.append("longitude", formData.longitude);
       data.append("price", formData.price);
 
+      // Update only ONCE
       await updateHotel(id, data);
 
-      alert("Hotel updated successfully!");
-
-      navigate("/");
+      // Send success message to HotelList
+      navigate("/", {
+        state: {
+          notification: {
+            type: "success",
+            message: "Hotel updated successfully!",
+          },
+        },
+      });
     } catch (error) {
       console.error("Failed to update hotel:", error);
 
-      alert(
-        error.response?.data?.message ||
-          "Failed to update hotel"
-      );
+      navigate("/", {
+        state: {
+          notification: {
+            type: "error",
+            message:
+              error.response?.data?.message ||
+              "Failed to update hotel",
+          },
+        },
+      });
     }
   };
 

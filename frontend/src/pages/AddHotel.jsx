@@ -16,18 +16,31 @@ function AddHotel() {
       data.append("longitude", formData.longitude);
       data.append("price", formData.price);
 
+      // Create hotel only once
       await createHotel(data);
 
-      alert("Hotel added successfully!");
-
-      navigate("/");
+      // Go back to home with success notification
+      navigate("/", {
+        state: {
+          notification: {
+            type: "success",
+            message: "Hotel added successfully!",
+          },
+        },
+      });
     } catch (error) {
       console.error("Failed to add hotel:", error);
 
-      alert(
-        error.response?.data?.message ||
-          "Failed to add hotel"
-      );
+      navigate("/", {
+        state: {
+          notification: {
+            type: "error",
+            message:
+              error.response?.data?.message ||
+              "Failed to add hotel",
+          },
+        },
+      });
     }
   };
 

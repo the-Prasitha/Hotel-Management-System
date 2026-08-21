@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import {
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+
 import { fetchHotels } from "../redux/hotelSlice";
 import HotelCard from "../components/HotelCard";
 import SearchFilter from "../components/SearchFilter";
@@ -11,6 +15,7 @@ import Notification from "../components/Notification";
 function HotelList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     hotels,
@@ -52,6 +57,24 @@ function HotelList() {
       })
     );
   }, [dispatch, filters, offset]);
+
+  // --------------------------------
+  // HANDLE NAVIGATION NOTIFICATION
+  // --------------------------------
+
+  useEffect(() => {
+    if (location.state?.notification) {
+      setNotification(location.state.notification);
+
+      // Clear navigation state so the
+      // notification doesn't appear again
+      // when the page is refreshed.
+      navigate("/", {
+        replace: true,
+        state: {},
+      });
+    }
+  }, [location, navigate]);
 
   // --------------------------------
   // SEARCH
@@ -126,13 +149,16 @@ function HotelList() {
 
   return (
     <div className="hotel-page">
+
+      {/* SEO */}
       <Helmet>
-  <title>Hotel Management System</title>
-  <meta
-    name="description"
-    content="Manage hotels, search hotels, filter by price, and view hotel details."
-  />
-</Helmet>
+        <title>Hotel Management System</title>
+
+        <meta
+          name="description"
+          content="Manage hotels, search hotels, filter by price, and view hotel details."
+        />
+      </Helmet>
 
       {/* Notification */}
       <Notification
