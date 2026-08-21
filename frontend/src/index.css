@@ -784,3 +784,13 @@ button {
     gap: 0;
   }
 }
+
+/* ================================
+   Form Validation Errors
+================================ */
+
+.form-error {
+  color: #c62828;
+  font-size: 13px;
+  margin-top: 2px;
+}

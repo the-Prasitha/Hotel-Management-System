@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { Helmet } from "react-helmet-async";
 import { fetchHotels } from "../redux/hotelSlice";
 import HotelCard from "../components/HotelCard";
 import SearchFilter from "../components/SearchFilter";
@@ -126,6 +126,13 @@ function HotelList() {
 
   return (
     <div className="hotel-page">
+      <Helmet>
+  <title>Hotel Management System</title>
+  <meta
+    name="description"
+    content="Manage hotels, search hotels, filter by price, and view hotel details."
+  />
+</Helmet>
 
       {/* Notification */}
       <Notification
